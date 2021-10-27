@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="paper-full.min.js"></script>
+
+    <style>
+        #canvas {
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id='canvas' width="500" height="400"></canvas>
+
+    <video controls id="dataVideo" width="500" height="400" src="AI-Face-Detection.mp4"></video>
+
+    <button onclick="getImage()">Download image</button>
+
+    <script>
+
+
+        let ctx = canvas.getContext('2d');
+        let img = new Image();
+        img.src = "1.png";
+
+
+        function getImage() {
+
+            // canvas.toDataURL();
+
+            canvas.toBlob((myBlob)=>{
+
+                let file = new File([myBlob], myBlob.type);
+
+                let link = document.createElement('a');
+                link.download = "some.png";
+                link.href = URL.createObjectURL(file);
+                link.click();
+
+
+
+
+            })
+
+        }
+
+
+        dataVideo.onloadedmetadata = (evt) => {
+
+            console.log(evt);
+
+        }
+
+        // dataVideo.ontimeupdate = () => {
+
+        dataVideo.ontimeupdate = () => {
+
+            ctx.drawImage(dataVideo, 0, 0, 500, 400);
+
+            let pixelData = ctx.getImageData(100, 100, 500, 400);
+
+            for (let i = 0; i < pixelData.data.length; i += 4) {
+
+                let red = pixelData.data[i];
+                let green = pixelData.data[i + 1];
+                let blue = pixelData.data[i + 2];
+
+                let avg = (red + green + blue) / 3;
+
+                pixelData.data[i] = avg;
+                pixelData.data[i + 1] = avg;
+                pixelData.data[i + 2] = avg;
+
+                // console.log(pixelData.data[i]);
+            }
+
+            ctx.putImageData(pixelData, 100, 100);
+
+
+            // ctx.drawImage(img, 420, 330, 50, 50);
+
+        };
+
+
+        // }
+
+
+        // paper.setup(canvas);
+
+
+        // var path;
+
+        // let drawingStarted = false;
+
+        // canvas.onmousedown = (evt) => {
+
+        //     path = new paper.Path();
+        //     path.strokeColor = 'black';
+
+        //     drawingStarted = true;
+
+        // }
+
+        // canvas.onmouseup = (evt) => {
+
+        //     drawingStarted = false;
+
+        // }
+
+        // canvas.onmousemove = (evt) => {
+
+        //     if (drawingStarted) {
+
+        //         path.add(new paper.Point(evt.clientX-10, evt.clientY-10));
+        //     }
+
+        // }
+
+        // path.add(new paper.Point(125, 30));
+        // path.add(new paper.Point(170, 100));
+        // path.add(new paper.Point(80, 100));
+        // path.add(new paper.Point(125, 30));
+        // path.fillColor = "red"
+
+        // var path = new paper.Path.Circle(new paper.Point(80, 50), 30);
+        // path.fillColor = "blue";
+        // path.strokeColor = 'black';
+
+        // setInterval(() => {
+
+        //     // path.position.x +=  1;
+
+        // }, 10)
+
+        // let ctx = canvas.getContext('2d');
+
+        // ctx.strokeRect(0, 0, 100, 200);
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(100, 100, 50, 50);
+
+        // let img = new Image();
+        // img.src = "1.jpg";
+        // img.onload = () => {
+
+        //     ctx.drawImage(img, 0, 0);
+
+        // }
+
+
+
+    </script>
+
+</body>
+
+</html>
